@@ -3,10 +3,9 @@ class PhysicsInstance {
 
     
 
-    constructor(traction, acceleration, maxspeed, breakPower, aero, vehicleModel) {
+    constructor(traction, acceleration, breakPower, aero, vehicleModel) {
         this.traction = traction;
         this.acceleration = acceleration;
-        this.maxspeed = maxspeed;
         this.vehicleModel = vehicleModel;
         //Rotação do veiculo possui 16 direções com 1 tomando 
         this.rotation = 0;
@@ -25,7 +24,7 @@ class PhysicsInstance {
         this.braking = false;
         
         //Contador de curva, a cada 80 frames ele permite o carro virar mais uma vez.
-        this.turnCounter = 80;
+        this.turnCounter = 60;
         this.vehicleModel.rotations = [
             0,
             Math.PI/8,
@@ -52,10 +51,8 @@ class PhysicsInstance {
         //Calcula deltas de aceleração
         let deltax = (Math.cos(this.vehicleModel.rotation.z) * (this.acceleration));
         let deltay = (Math.sin(this.vehicleModel.rotation.z) * (this.acceleration));
-        //console.log(this.speed);
         this.speed.x+= deltax;
         this.speed.y +=deltay;
-        //console.log(this.speed);
             
     }
     calculateDeltas(){
@@ -68,37 +65,38 @@ class PhysicsInstance {
     
     //Freia o carro
     break () {
+        let truespeed = this.speed.length();
         //Calcula deltas de desaceleração
-        let deltax = (Math.cos(this.vehicleModel.rotation.z) * (this.breakPower));
-        let deltay = (Math.sin(this.vehicleModel.rotation.z) * (this.breakPower));
+        let deltax = (Math.cos(this.vehicleModel.rotation.z) * (this.breakPower*(1-truespeed)));
+        let deltay = (Math.sin(this.vehicleModel.rotation.z) * (this.breakPower*(1-truespeed)));
         this.speed.x-= deltax;
         this.speed.y-=deltay;
         //Os leva para 0 caso o carro freie demais
-        if(Math.abs(this.speed.length())<=this.breakPower*5){
+        /*if(Math.abs(this.speed.length())<=this.breakPower*5){
             this.speed.x =0;
             this.speed.y =0;
-        }
+        }*/
     }
     //Reduz a velocidade por conta do empuxo do ar do carro
     reduceByAero(){
        
-        let aeroReduction = this.aero*Math.pow(this.speed.length(),2);
+        let aeroReduction = this.aero*Math.pow(this.speed.length(),2)+0.0001;
         
        
         let deltax = (Math.cos(this.vehicleModel.rotation.z) * (aeroReduction));
         let deltay = (Math.sin(this.vehicleModel.rotation.z) * (aeroReduction));
        
-        this.speed.x-= deltax;
-        this.speed.y-=deltay;
-
-        /*
-        this.speed.x-= deltax;
-        this.speed.y-=deltay;
-        //Arredonda pra 0 quando o carro está perto de parar
-        if(Math.abs(this.speed.length())<=aeroReduction*2){
-            this.speed.x =0;
-            this.speed.y =0;
-        }*/
+       
+            this.speed.x-= deltax;
+            this.speed.y-=deltay;
+            this.speed.x-= deltax;
+            this.speed.y-=deltay;
+            //Arredonda pra 0 quando o carro está perto de parar
+            if(Math.abs(this.speed.length())<=aeroReduction*2){
+                this.speed.x =0;
+                this.speed.y =0;
+            }
+        
     }
 
     //Calcula novas velocidades x e y
@@ -106,13 +104,13 @@ class PhysicsInstance {
         //Reduz o contador de virar o carro
         this.turnCounter = this.turnCounter>0? this.turnCounter-1 : 0;
         //Mudança de direção
-        if(this.turnCounter==0 && Math.abs(this.speed.length())>=this.acceleration*80){
+        if(this.turnCounter==0 && Math.abs(this.speed.length())>=this.acceleration*53){
             if(this.rightTurning){
-                this.turnCounter = 80;
+                this.turnCounter = 60;
                 this.turnCar(true);
             }
             else if(this.leftTurning){
-            this.turnCounter = 80;
+            this.turnCounter = 60;
             this.turnCar(false);
             }  
         }
@@ -120,7 +118,6 @@ class PhysicsInstance {
         //Calcula aceleração e freio
         if(this.braking){
             this.break();
-            console.log("yes");
         }
         else if(this.accelerating){
             this.accelerate();
@@ -147,15 +144,12 @@ class PhysicsInstance {
     turnCar(direction) {
         if (!direction) {
             this.rotation = this.rotation == 15 ? 0 : this.rotation + 1;
-            //this.vehicleModel.rotation.z = this.getAngle(this.rotation);
             this.vehicleModel.rotation.z = this.vehicleModel.rotations[this.rotation];
-            //this.vehicleModel.rotation.z+=(360/17);
+           
         } else {
             this.rotation = this.rotation == 0 ? 15 : this.rotation - 1;
-            //this.vehicleModel.rotation.z = this.getAngle(this.rotation);
             this.vehicleModel.rotation.z = this.vehicleModel.rotations[this.rotation];
             
-            //this.vehicleModel.rotation.z-=(360/17);
         }
     }
 

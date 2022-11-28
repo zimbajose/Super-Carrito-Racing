@@ -9,7 +9,7 @@ var keyScope = this;
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(35,window.innerWidth/window.innerHeight);
 var render = new THREE.WebGLRenderer({antialiasing:true});
-camera.position.z = 500;
+camera.position.z = 400;
 var chassiGeometry = new THREE.BoxGeometry(4, 2, 0.7);
 var carTexture = new THREE.MeshBasicMaterial({ color: 0xffaa10 }); //Chassi
 var chassi = new THREE.Mesh(chassiGeometry, carTexture);
@@ -33,7 +33,7 @@ function renderLoop() {
 }
 requestAnimationFrame(renderLoop);
 
-var phyi = new PhysicsInstance(1,0.001,0.1,0.004,0.005,car);
+var phyi = new PhysicsInstance(0.1,0.002,0.003,0.0025,car);
 //Eventos de teclado
 var keyboard_events = listener.register_many([
     {
