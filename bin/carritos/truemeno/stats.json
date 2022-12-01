@@ -1,0 +1,13 @@
+{
+    "traction":200,
+    "acceleration":0.002,
+    "breakPower":0.003,
+    "aero":0.0025,
+    "wheel":"Roda.gltf",
+    "chassi":"Chassi.gltf",
+    "wheeloffset":{
+        "x":0,
+        "y":0,
+        "z":0
+    }
+}

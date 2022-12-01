@@ -1,4 +1,5 @@
-
+import carStats from "/bin/carritos/truemeno/stats.json" assert {type:'json'};
+console.log(carStats);
 const loopTime = 0.12; // Tempo de loop de jogo
 
 var racetime = 0; //Tempo em milisegundos da corrida
@@ -6,22 +7,27 @@ var racetime = 0; //Tempo em milisegundos da corrida
 var listener = new window.keypress.Listener() //Leitor de teclas
 var keyScope = this;
 
+//Carregador de modelos
+const gltfLoader = new THREE.GLTFLoader();
+
+
+
+var carTexture = new THREE.MeshBasicMaterial({ color: 0xffaa10 }); //Chassi
+var car = new THREE.Group();
+
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(35,window.innerWidth/window.innerHeight);
 var render = new THREE.WebGLRenderer({antialiasing:true});
 camera.position.z = 400;
-var chassiGeometry = new THREE.BoxGeometry(4, 2, 0.7);
-var carTexture = new THREE.MeshBasicMaterial({ color: 0xffaa10 }); //Chassi
-var chassi = new THREE.Mesh(chassiGeometry, carTexture);
-var chassi2 = new THREE.Mesh(new THREE.BoxGeometry(3, 1, 0.7), carTexture);
-chassi2.position.x = 2;
+
+
 render.setSize(window.innerWidth, window.innerHeight);
 var canvas = render.domElement;
-var car = new THREE.Group();
-car.add(chassi);
-car.add(chassi2);
 
-scene.add(car);
+
+
+
 
 const light = new THREE.AmbientLight(0x404040); // soft white light
 scene.add(light);
@@ -33,8 +39,45 @@ function renderLoop() {
 }
 requestAnimationFrame(renderLoop);
 
-var phyi = new PhysicsInstance(0.1,0.002,0.003,0.0025,car);
+
+
 //Eventos de teclado
+
+//Cubo aleatorio
+/*var randomCube = chassi;
+randomCube.position.x=10;
+randomCube.position.y=10;
+randomCube.scale.x = 4;
+randomCube.scale.y = 4;
+scene.add(randomCube);
+*/
+var cubeGeometry = new THREE.BoxGeometry(500,500,1);
+var cube = new THREE.Mesh(cubeGeometry,carTexture);
+cube.position.z = -2;
+scene.add(cube);
+
+var phyi = {
+    "calculateNextPosition" : function(){
+
+    }
+}
+var car = new THREE.Group();
+var chassiUrl = "bin/carritos/truemeno/"+carStats.chassi;
+var chassi = new THREE.Group();
+//Carrega o modelo
+gltfLoader.load(chassiUrl,(gltf)=>{
+    gltf.scene.children.forEach((child)=>{
+        chassi.add(child);
+    })
+    car.add(chassi);
+    chassi.rotation.x =Math.PI/2;
+    chassi.rotation.y = Math.PI/2;
+    car.position.set(0,0,0);
+    car.scale.set(5,5,5);
+    phyi = new PhysicsInstance(carStats,car);
+    scene.add(car);
+});
+
 var keyboard_events = listener.register_many([
     {
         "keys" : "w",
@@ -85,6 +128,8 @@ var keyboard_events = listener.register_many([
         "this": keyScope
     }
 ]);
+
+
 
 
 async function gameLoop() {

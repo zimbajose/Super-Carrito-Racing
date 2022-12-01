@@ -1,18 +1,25 @@
 //Uma instancia de física para um veiculo do jogo
+class Collider{
+
+    constructor(){
+
+    }
+
+}
+
 class PhysicsInstance {
 
-    
 
-    constructor(traction, acceleration, breakPower, aero, vehicleModel) {
-        this.traction = traction;
-        this.acceleration = acceleration;
+    constructor(stats, vehicleModel) {
+        this.traction = stats.traction;
+        this.acceleration = stats.acceleration;
         this.vehicleModel = vehicleModel;
         //Rotação do veiculo possui 16 direções com 1 tomando 
         this.rotation = 0;
 
-        this.breakPower = breakPower;
+        this.breakPower = stats.breakPower;
 
-        this.aero = aero;
+        this.aero = stats.aero;
         //Velocidade do carro
         this.speed = new THREE.Vector3(0, 0, 0);
         //Deltas de aceleração do carro
@@ -43,6 +50,8 @@ class PhysicsInstance {
             (Math.PI/180)*315,
             (Math.PI/180)*337.5,
         ]
+        //Centro de velocidade
+        this.speedCenter = new THREE.Vector3(0,0,0);
     }
 
 
@@ -92,7 +101,7 @@ class PhysicsInstance {
             this.speed.x-= deltax;
             this.speed.y-=deltay;
             //Arredonda pra 0 quando o carro está perto de parar
-            if(Math.abs(this.speed.length())<=aeroReduction*2){
+            if(Math.abs(this.speed.length())<=this.acceleration*2 && this.accelerating==false){
                 this.speed.x =0;
                 this.speed.y =0;
             }
@@ -128,9 +137,23 @@ class PhysicsInstance {
         //Altera velocidade
         this.calculateDeltas();//Calcula novos deltas
        
-        this.speed.multiplyScalar(100 - this.traction);
+        //Adiciona arrasto caso o carro não esteja indo na direção do angulo
+        
+        //Verifica as diferanças de velocidade do delta e da speed
+        let distance = this.speed.distanceToSquared(this.deltas);
+       
+        if(distance>0+this.acceleration*1.5){
+            //Divide o vetor de speed baseado na tração
+            this.speed.divideScalar(1+(this.traction/400)/120)
+        } 
+        
+        //Calcula a velocidade final
+        this.speed.multiplyScalar(400 - this.traction);
         this.speed.addVectors(this.speed, this.deltas);
-        this.speed.divideScalar(100 - this.traction + 1);
+        this.speed.divideScalar(400 - this.traction + 1);
+       
+       
+        
        
 
     }
