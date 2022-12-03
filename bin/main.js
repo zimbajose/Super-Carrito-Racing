@@ -19,8 +19,11 @@ var car = new THREE.Group();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(35,window.innerWidth/window.innerHeight);
 var render = new THREE.WebGLRenderer({antialiasing:true});
-camera.position.z = 400;
 
+//Ajusta posicao da camera
+camera.position.z = 200;
+camera.rotation.z = (Math.PI/180)*30;
+camera.rotation.x = (Math.PI/180)*30;
 
 render.setSize(window.innerWidth, window.innerHeight);
 var canvas = render.domElement;
@@ -29,7 +32,7 @@ var canvas = render.domElement;
 
 
 
-const light = new THREE.AmbientLight(0x404040); // soft white light
+const light = new THREE.AmbientLight(0xFFFFFF); // soft white light
 scene.add(light);
 document.body.appendChild(canvas);
 
@@ -63,8 +66,9 @@ var phyi = {
 }
 var car = new THREE.Group();
 var chassiUrl = "bin/carritos/truemeno/"+carStats.chassi;
+var wheelUrl = "bin/carritos/truemeno/"+carStats.wheel;
 var chassi = new THREE.Group();
-//Carrega o modelo
+//Carrega o modelo do carro
 gltfLoader.load(chassiUrl,(gltf)=>{
     gltf.scene.children.forEach((child)=>{
         chassi.add(child);
@@ -75,6 +79,47 @@ gltfLoader.load(chassiUrl,(gltf)=>{
     car.position.set(0,0,0);
     car.scale.set(5,5,5);
     phyi = new PhysicsInstance(carStats,car);
+    scene.add(car);
+});
+
+//Carrega o modelo da roda
+var wheels = []; //Vetor com rodas
+gltfLoader.load(wheelUrl,(gltf)=>{
+    gltf.scene.children.forEach((child)=>{
+        //Posiciona as rodas no carro
+        
+        let topLeft = child.clone();
+        topLeft.position.y = carStats.wheelOffset.y;
+        topLeft.position.y = -carStats.wheelOffset.x;
+        car.add(topLeft);
+
+        let topRight = child.clone();
+        topRight.position.y = carStats.wheelOffset.y;
+        topRight.position.y = carStats.wheelOffset.x;
+        car.add(topRight);
+
+        let bottomRight = child.clone();
+        bottomRight.position.y = -carStats.wheelOffset.y;
+        bottomRight.position.y = carStats.wheelOffset.x;
+        car.add(bottomRight);
+
+        let bottomLeft = child.clone();
+        bottomLeft.position.y = -carStats.wheelOffset.y;
+        bottomLeft.position.y = -carStats.wheelOffset.x;
+        car.add(bottomLeft);
+
+        //Adiciona as rodas a um vetor
+        wheels.push(topLeft);
+        wheels.push(topRight);
+        wheels.push(bottomLeft);
+        wheels.push(bottomRight);
+    })
+    car.add(chassi);
+    chassi.rotation.x =Math.PI/2;
+    chassi.rotation.y = Math.PI/2;
+    car.position.set(0,0,0);
+    car.scale.set(5,5,5);
+    phyi = new PhysicsInstance(carStats,car,wheels);
     scene.add(car);
 });
 
@@ -133,7 +178,10 @@ var keyboard_events = listener.register_many([
 
 
 async function gameLoop() {
-    phyi.calculateNextPosition();
+        phyi.calculateNextPosition();
+        //Faz com que a camera siga o carro
+        camera.position.x = phyi.vehicleModel.position.x+40;
+        camera.position.y = phyi.vehicleModel.position.y-300+200;
 }
 
 setInterval(gameLoop, loopTime);

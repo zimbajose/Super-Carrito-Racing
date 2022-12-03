@@ -10,7 +10,7 @@ class Collider{
 class PhysicsInstance {
 
 
-    constructor(stats, vehicleModel) {
+    constructor(stats, vehicleModel,wheels) {
         this.traction = stats.traction;
         this.acceleration = stats.acceleration;
         this.vehicleModel = vehicleModel;
@@ -52,6 +52,9 @@ class PhysicsInstance {
         ]
         //Centro de velocidade
         this.speedCenter = new THREE.Vector3(0,0,0);
+
+        //Rodas
+        this.wheels;
     }
 
 
