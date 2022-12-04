@@ -5,10 +5,26 @@
     "aero":0.0025,
     "wheel":"Roda.gltf",
     "chassi":"Chassi.gltf",
-    "wheelOffset":{
-        "x":4,
-        "y":4,
-        "z":0,
-        "scale": 0.27
+    "wheelData":{
+        "positions":{
+            "topLeft":{
+                "x":-0.1,
+                "y":1.45
+            },
+            "topRight":{
+                "x":-0.1,
+                "y":-1.45
+            },
+            "bottomLeft":{
+                "x":-3.4,
+                "y":1.45
+            },
+            "bottomRight":{
+                "x":-3.4,
+                "y":-1.45
+            }
+        },
+        "scale": 0.5,
+        "offsetZ":-0.5
     }
 }

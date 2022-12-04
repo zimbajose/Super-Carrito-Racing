@@ -3,22 +3,31 @@ class Race {
     constructor() {
         //Instancia a cena e camera da corrida da corrida
         this.scene = new THREE.Scene();
+        
         this.camera = new THREE.PerspectiveCamera();
+
+        
 
         //Ultimo tempo de jogo
         this.lastRunned = 0;
 
-        //Instancia de física
-        this.examplePhysics = new PhysicsInstance(50, 2)
+
+    }
+
+    loadCar(){
+        chassiLoaded = false;
+        wheelsLoaded = false;
 
     }
 
 
-    //Executa as físicas e jogo
-
-    run(gameTime) {
+    loadTrack(){
 
     }
 
+
+    loop(){
+
+    }
 
 }

@@ -54,7 +54,13 @@ class PhysicsInstance {
         this.speedCenter = new THREE.Vector3(0,0,0);
 
         //Rodas
-        this.wheels;
+        this.wheels = wheels;
+
+        //Cria os colisores
+        this.createColliders();
+
+        //Vetor pra alguma coisa
+        this.positionVector = new THREE.Vector3(0,0,0);
     }
 
 
@@ -122,8 +128,8 @@ class PhysicsInstance {
                 this.turnCar(true);
             }
             else if(this.leftTurning){
-            this.turnCounter = 60;
-            this.turnCar(false);
+                this.turnCounter = 60;
+                this.turnCar(false);
             }  
         }
         
@@ -161,10 +167,26 @@ class PhysicsInstance {
 
     }
 
+    //Seta os objetos colidiveis
+    setCollidableObjects(objects){
+        this.collidableObjects = objects;
+    }
+
     //Atualiza as posições
     calculateNextPosition() {
+            this.collide();
             this.calculateNewSpeed();
             this.vehicleModel.position.add(this.speed);
+            //Rotaciona as rodas
+            let length = this.speed.length();
+            let rotation;
+            if(length>0){
+                rotation = -(Math.PI/180)*(length/0.03);
+                this.wheels.forEach((wheel)=>{
+                    wheel.rotateZ(rotation);
+                });
+            }
+            
         }
         //True para direita false para esquerda
     turnCar(direction) {
@@ -180,19 +202,78 @@ class PhysicsInstance {
     }
 
     //Obtem um vetor com objetos proximos e trata uma colisão
-    collide(objects) {
-        objects.forEach(object => {
-
+    collide() {
+      
+        //Procura por uma colisão
+        this.colliders.forEach((collider)=>{
+            //Posicao do colisor
+            collider.object.getWorldPosition(this.positionVector);
+            collider.directions.forEach((direction)=>{
+                this.raycaster.set(this.positionVector, direction)
+                let objects = this.raycaster.intersectObjects(this.collidableObjects);
+                //Trata a colisáo caso ocorra
+                if(objects.length>0){
+                    this.speed.x = -this.speed.x;
+                    this.speed.y = -this.speed.y;
+                    return;
+                }
+            });
         });
     }
-
-
-
 
     //Converte um número das 16 direções para um angulo
     getAngle(rotation) {
         return rotation * (180 / 16);
     }
 
+    //Cria os sensores de colisão
+    createColliders(){
+        
+        this.collidableObjects = []//Objetos colidiveis
+        this.colliders = [];
+        
+        //Instancia o raycaster
+        this.raycaster = new THREE.Raycaster();
+        this.raycaster.far = 6;
+        this.raycaster.near = 0.01;
+        
+        //Vetores de direção
+        let left = new THREE.Vector3(0,-1,0);
+        let right = new THREE.Vector3(0,1,0);
+        let forwards = new THREE.Vector3(1,0,0);
+        let backwards = new THREE.Vector3(-1,0,0);
+
+        
+
+        //Cria os colisores
+        //Frente esquerda
+        let topLeft = {
+            "object" : this.wheels[0],
+            "directions" : [left,forwards]
+        }
+        //Frente direita
+        let topRight = {
+            "object" : this.wheels[1],
+            "directions" : [right,forwards]
+        }
+        //Traseira esquerda
+        let bottomLeft = {
+            "object" : this.wheels[2],
+            "directions" :[left,backwards]
+        }
+        //Traseira direita
+        let bottomRight = {
+            "object" : this.wheels[3],
+            "directions" : [right,backwards]
+        }
+        
+        this.colliders.push(topLeft);
+        this.colliders.push(topRight);
+        this.colliders.push(bottomLeft);
+        this.colliders.push(bottomRight);
+
+
+    }
 
 }
+
