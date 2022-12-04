@@ -203,7 +203,6 @@ class PhysicsInstance {
 
     //Obtem um vetor com objetos proximos e trata uma colisão
     collide() {
-      
         //Procura por uma colisão
         this.colliders.forEach((collider)=>{
             //Posicao do colisor
@@ -213,12 +212,15 @@ class PhysicsInstance {
                 let objects = this.raycaster.intersectObjects(this.collidableObjects);
                 //Trata a colisáo caso ocorra
                 if(objects.length>0){
-                    this.speed.x = -this.speed.x;
-                    this.speed.y = -this.speed.y;
+                    this.speed.x = -this.speed.x*1.3;
+                    this.speed.y = -this.speed.y*1.3;
+                   
                     return;
                 }
             });
+           
         });
+       
     }
 
     //Converte um número das 16 direções para um angulo
@@ -243,33 +245,32 @@ class PhysicsInstance {
         let forwards = new THREE.Vector3(1,0,0);
         let backwards = new THREE.Vector3(-1,0,0);
 
-        
 
         //Cria os colisores
         //Frente esquerda
         let topLeft = {
             "object" : this.wheels[0],
-            "directions" : [left,forwards]
+            "directions" : [forwards]
         }
         //Frente direita
         let topRight = {
             "object" : this.wheels[1],
-            "directions" : [right,forwards]
+            "directions" : [forwards]
         }
         //Traseira esquerda
         let bottomLeft = {
             "object" : this.wheels[2],
-            "directions" :[left,backwards]
+            "directions" :[backwards]
         }
         //Traseira direita
         let bottomRight = {
             "object" : this.wheels[3],
-            "directions" : [right,backwards]
+            "directions" : [backwards]
         }
         
         this.colliders.push(topLeft);
-        this.colliders.push(topRight);
-        this.colliders.push(bottomLeft);
+        //this.colliders.push(topRight);
+        //this.colliders.push(bottomLeft);
         this.colliders.push(bottomRight);
 
 

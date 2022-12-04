@@ -1,8 +1,8 @@
 {
-    "traction":200,
-    "acceleration":0.002,
+    "traction":50,
+    "acceleration":0.008,
     "breakPower":0.003,
-    "aero":0.0025,
+    "aero":0.0020,
     "wheel":"Roda.gltf",
     "chassi":"Chassi.gltf",
     "wheelData":{
@@ -27,4 +27,5 @@
         "scale": 0.3,
         "offsetZ":-0.5
     }
+
 }
