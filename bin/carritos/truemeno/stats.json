@@ -5,6 +5,9 @@
     "aero":0.0020,
     "wheel":"Roda.gltf",
     "chassi":"Chassi.gltf",
+    "audio":"bin/carritos/truemeno/motor.ogg",
+    "audioHigh": "bin/carritos/truemeno/motorengracado.ogg",
+    "tireScreech" : "bin/carritos/truemeno/derrapando.ogg",
     "wheelData":{
         "positions":{
             "topLeft":{

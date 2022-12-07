@@ -29,6 +29,18 @@ class PhysicsInstance {
         this.leftTurning = false;
         this.rightTurning = false;
         this.braking = false;
+
+        //Audios do carro
+        this.revAudioIdle = new Audio(stats.audio);
+        this.revAudioRunning = new Audio(stats.audioHigh);
+        this.revAudioIdle.loop = true;
+        this.revAudioRunning.loop = true;
+        this.revAudioIdle.play();
+
+        this.crashAudio = new Audio(stats.crash);
+
+        this.tireScreech = new Audio(stats.tireScreech);
+
         
         //Contador de curva, a cada 80 frames ele permite o carro virar mais uma vez.
         this.turnCounter = 60;
@@ -156,14 +168,13 @@ class PhysicsInstance {
             this.speed.divideScalar(1+(this.traction/400)/120)
         } 
         
+        
+
         //Calcula a velocidade final
         this.speed.multiplyScalar(400 - this.traction);
         this.speed.addVectors(this.speed, this.deltas);
         this.speed.divideScalar(400 - this.traction + 1);
-       
-       
         
-       
 
     }
 
@@ -186,7 +197,20 @@ class PhysicsInstance {
                     wheel.rotateZ(rotation);
                 });
             }
-            
+            //Altera o audio
+            if(length>this.acceleration*150){
+                if(this.revAudioRunning.paused){
+                    console.log("memes");
+                    this.revAudioRunning.play();
+                    this.revAudioIdle.pause();
+                }
+            }
+            else{
+                if(this.revAudioIdle.paused){
+                    this.revAudioIdle.play();
+                    this.revAudioRunning.pause();
+                }
+            }
         }
         //True para direita false para esquerda
     turnCar(direction) {
@@ -214,7 +238,7 @@ class PhysicsInstance {
                 if(objects.length>0){
                     this.speed.x = -this.speed.x*1.3;
                     this.speed.y = -this.speed.y*1.3;
-                   
+                    this.crashAudio.play();
                     return;
                 }
             });
