@@ -13,6 +13,9 @@ const gltfLoader = new THREE.GLTFLoader();
 
 var render = new THREE.WebGLRenderer({ antialias: true });
 
+
+render.shadowMap.enabled = true;
+render.shadowMap.type = THREE.PCFSoftShadowMap;
 //Camera e cenas para o menu
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera();

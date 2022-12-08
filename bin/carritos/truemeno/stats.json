@@ -2,7 +2,7 @@
     "traction":50,
     "acceleration":0.008,
     "breakPower":0.003,
-    "aero":0.0020,
+    "aero":0.001,
     "wheel":"Roda.gltf",
     "chassi":"Chassi.gltf",
     "audio":"bin/carritos/truemeno/motor.ogg",

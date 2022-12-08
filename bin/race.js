@@ -7,19 +7,20 @@ class Race {
         this.camera = new THREE.PerspectiveCamera();
 
         //Adiciona luz a cena
-        var light = new THREE.PointLight(0xffffff,3,100000000);
-        light.position.z=10000;
-        light.position.x=25;
+        var light = new THREE.PointLight( 0xffffff,5,99999999);
+        light.position.z=500;
+        //light.position.x=1000;
+        light.position.y=500;
         light.castShadow = true;
        
         light.shadow.mapSize.width = 512; // default
         light.shadow.mapSize.height = 512; // default
         light.shadow.camera.near = 0.5; // default
-        light.shadow.camera.far = 500; // default
+        light.shadow.camera.far = 5000000; // default
 
         this.scene.add(light);
 
-        var luzAmbiente = new THREE.AmbientLight(0x333333);
+        var luzAmbiente = new THREE.AmbientLight(0x222222);
         this.scene.add(luzAmbiente);
 
         //Adicionando chão_______________
@@ -27,6 +28,8 @@ class Race {
         var groundTexture = new THREE.MeshBasicMaterial({ map: texture});
         var groundGeometry = new THREE.BoxGeometry(10000, 10000, 0.1);
         var ground = new THREE.Mesh(groundGeometry, groundTexture);
+        //ground.castShadow = true;
+        ground.receiveShadow = true;
         ground.position.set(0,0,-10);
         this.scene.add(ground);
 
@@ -55,6 +58,8 @@ class Race {
 
         //Instancia vetor dos colidiveis
         this.collidables = [];
+       
+   
     }
 
     async loadCar(loader,carStats){
@@ -69,6 +74,7 @@ class Race {
         loader.load(chassiUrl,(gltf)=>{
             gltf.scene.children.forEach((child)=>{
                 child.castShadow = true;
+                child.receiveShadow = true;
                 chassi.add(child);
             })
             car.add(chassi);
@@ -81,6 +87,7 @@ class Race {
                 car.position.set(0,0,3.7);
                 car.scale.set(5,5,5);
                 this.car= new PhysicsInstance(carStats,car,wheels);
+                
             }
         });
 
@@ -194,6 +201,9 @@ class Race {
                 
                 child.castShadow = true;
                 child.receiveShadow = true;
+                child.material = new THREE.MeshStandardMaterial( {
+                    color: 0xff4400, roughness: 0.2, name: 'orange'
+                })
                 this.collidables.push(child);
                 this.track.add(child);
          
@@ -210,7 +220,9 @@ class Race {
         this.camera.position.z = this.car.vehicleModel.position.z+900;
         this.camera.position.x = this.car.vehicleModel.position.x+40;
         this.camera.position.y = this.car.vehicleModel.position.y-400;
-        
+      
+  
+
         //Incremente o timer
         this.raceTime+=this.frequency;
     }
