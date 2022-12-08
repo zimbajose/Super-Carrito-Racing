@@ -1,0 +1,19 @@
+{
+  "height":10,
+  "path":"bin/tracks/asphaltroad/pistaBasicaRoxa3.gltf",
+  "startPosition":{
+      "x":0,
+      "y":0,
+      "z":60,
+      "angle":10
+  },
+  "scale":200,
+  "linePositions" : [
+      {
+          "x":0,
+          "y":1,
+          "z":2
+      }
+  ],
+  "laps" : 2
+}

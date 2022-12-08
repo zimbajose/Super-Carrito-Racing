@@ -1,13 +1,13 @@
 {
     "height":10,
-    "path":"bin/tracks/asphaltroad/asphaltroad.gltf",
+    "path":"bin/tracks/asphaltroad/pistaBasicaAmarela4.gltf",
     "startPosition":{
         "x":0,
-        "y":10,
-        "z":130,
+        "y":0,
+        "z":220,
         "angle":10
     },
-    "scale":10000,
+    "scale":20000,
     "linePositions" : [
         {
             "x":0,
