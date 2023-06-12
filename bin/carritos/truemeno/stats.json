@@ -8,6 +8,7 @@
     "audio":"bin/carritos/truemeno/motor.ogg",
     "audioHigh": "bin/carritos/truemeno/motorengracado.ogg",
     "tireScreech" : "bin/carritos/truemeno/derrapando.ogg",
+    "crash" : "bin/carritos/truemno/bater.mp3" , 
     "wheelData":{
         "positions":{
             "topLeft":{
