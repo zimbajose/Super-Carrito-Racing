@@ -236,8 +236,8 @@ class PhysicsInstance {
                 let objects = this.raycaster.intersectObjects(this.collidableObjects);
                 //Trata a colisáo caso ocorra
                 if(objects.length>0){
-                    this.speed.x = -this.speed.x*1.3;
-                    this.speed.y = -this.speed.y*1.3;
+                    this.speed.x = -this.speed.x*0.9;
+                    this.speed.y = -this.speed.y*0.9;
                     this.crashAudio.play();
                     return;
                 }
